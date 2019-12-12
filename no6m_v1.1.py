@@ -12,7 +12,9 @@ ser = serial.Serial("/dev/serial0", baudrate = 9600, timeout = 0.5)
 
 file1 = open("dataTest.txt","a")
 now = datetime.datetime.now()
-file1.write('\n' + '---------- ' + now.strftime('%d.%m.%Y' '  ' '%H:%M:%S') + ' ----------' + '\n' + '\n')
+lastHadConnection = False
+file1.write('\n---------- ' + now.strftime('%d.%m.%Y' "  " '%H:%M:%S') + ' ----------\n')
+file1.write('---------- Not Connected yet ----------\n\n')
 file1.close()
 
 while True:
@@ -22,12 +24,18 @@ while True:
         dataStr = data.decode('utf-8')[0:-2]
         dataArr = dataStr.split(",")
         file1 = open("dataTest.txt","a")
-        if dataArr[2] == 'V':
-            file1.write("no satellite data available" + '\n')
-            print ("no satellite data available")
+        if dataArr[2] == 'V' and lastHadConnection:
+            now = datetime.now()
+            msgStr = '\n---------- Connection lost: ' + now.strftime('%d.%m.%Y' "  " '%H:%M:%S') + ' ----------\n'
+            file1.write(msgStr + '\n')
+            print (msgStr)
             GPIO.output(23, GPIO.LOW)
             GPIO.output(24, GPIO.HIGH)
-        else:    
+        else:   
+            if not lastHadConnection:
+                msgStr = '\n---------- Connected: ' + now.strftime('%d.%m.%Y' "  " '%H:%M:%S') + ' ----------\n'
+                file1.write(msgStr + '\n')
+                print (msgStr)
             file1.write(dataStr + '\n')
             print (dataStr)
             GPIO.output(24, GPIO.LOW)
