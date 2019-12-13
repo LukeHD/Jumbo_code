@@ -39,10 +39,11 @@ def getMpuData():
     beschleunigung_xout = ("%6d" % read_word_2c(0x3b))
     beschleunigung_yout = ("%6d" % read_word_2c(0x3d))
     beschleunigung_zout = ("%6d" % read_word_2c(0x3f))
+
     
-    beschleunigung_xout_skaliert = beschleunigung_xout / 16384.0
-    beschleunigung_yout_skaliert = beschleunigung_yout / 16384.0
-    beschleunigung_zout_skaliert = beschleunigung_zout / 16384.0
+    beschleunigung_xout_skaliert = float(beschleunigung_xout) / 16384.0
+    beschleunigung_yout_skaliert = float(beschleunigung_yout) / 16384.0
+    beschleunigung_zout_skaliert = float(beschleunigung_zout) / 16384.0
     
     x_rot = get_x_rotation(beschleunigung_xout_skaliert, beschleunigung_yout_skaliert, beschleunigung_zout_skaliert)
     y_rot = get_y_rotation(beschleunigung_xout_skaliert, beschleunigung_yout_skaliert, beschleunigung_zout_skaliert)
