@@ -31,13 +31,13 @@ while True:
                 now = datetime.now()
                 file1.write('\n------------- Connection lost: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' -------------\n\n')
             GPIO.output(23, GPIO.LOW)
-            GPIO.output(24, GPIO.HIGH)
+
         else:   
             print (dataStr)
             if not lastHadConnection:
                 lastHadConnection = True
                 file1.write('\n---------------- Connected: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' ----------------\n\n')
-            GPIO.output(24, GPIO.LOW)
+
             GPIO.output(23, GPIO.HIGH)
             file1.write(dataStr + '\n')  
         file1.close()
