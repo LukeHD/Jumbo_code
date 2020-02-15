@@ -3,8 +3,12 @@ import requests
 
 from bufferCode import Bme, Mpu, session
 
-postIndices = [1, 1]
+# --- creating global variables used for posting
+
+postIndices = [1, 1, 1]
 url = 'http://192.168.2.105:5000/api/raspi/'
+
+# --- declaring functions for posting the measurements to the webserver
 
 def postBme():
     print(postIndices[0])

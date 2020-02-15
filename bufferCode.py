@@ -56,7 +56,7 @@ Base.metadata.create_all(engine)
 
 # --- declaring the functions for buffering the measurements
 
-def pushData():
+def bufferData():
     bmeVal = readBME280All()
     ins = Bme(
         time = dt.now(),

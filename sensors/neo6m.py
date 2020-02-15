@@ -5,7 +5,9 @@ import RPi.GPIO as GPIO
 from bufferCode import pushGPS
 from postCode import url, postIndices
 
-def loopGPS():
+# --- declaring a loop for the GPS serial stream
+
+def bufferAndPostGPS():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(23, GPIO.OUT)
@@ -49,6 +51,8 @@ def loopGPS():
             time.sleep(3)
             
             
+# --- declaring a function for posting the location to the webserver
+
 def postGPS():
     print(postIndices[2])
     dataSet = session.query(Neo6m).get(postIndices[2])
