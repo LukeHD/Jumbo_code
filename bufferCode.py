@@ -45,6 +45,7 @@ Base.metadata.create_all(engine)
 def pushData():
     bmeVal = readBME280All()
     ins = Bme(
+        time = dt.now(),
         temperature = bmeVal[0],
         pressure = bmeVal[1],
         humidity = bmeVal[2]
@@ -58,6 +59,7 @@ def pushData():
 
     mpuVal = getMpuData()
     ins = Mpu(
+        time = dt.now(),
         gyroscope_x = mpuVal[0][0],
         gyroscope_y = mpuVal[0][1],
         gyroscope_z = mpuVal[0][2],
