@@ -23,6 +23,7 @@ class Bme(Base):
     humidity = Column(Integer)
     pressure = Column(Integer)
 
+
 class Mpu(Base):
     __tablename__ = 'mpu'
 
@@ -39,6 +40,14 @@ class Mpu(Base):
 
     rot_x = Column(Integer)
     rot_y = Column(Integer)
+
+class Neo6m(Base):
+    __tablename__ = 'Neo6m'
+    
+    id = Column(Integer, primary_key=True)
+    time = Column(DateTime, default=dt.now())
+
+    data = Column(String)
 
 Base.metadata.create_all(engine)
 
@@ -79,3 +88,15 @@ def pushData():
     except:
         ("\nWasn't able to add to the mpu table!")
 
+def pushGPS(dataStr):
+    ins = Neo6m(
+        time = dt.now(),
+        data = dataStr
+    )
+    try:
+        session.add(ins)
+        session.commit()
+        print('buffered neo')
+    except:
+        print("\nWasn't able to add to the neo table!")
+    
