@@ -3,6 +3,7 @@ import time
 import datetime
 import RPi.GPIO as GPIO
 from bufferCode import pushGPS
+from postCode import url, postIndices
 
 def loopGPS():
     GPIO.setwarnings(False)
@@ -44,4 +45,23 @@ def loopGPS():
                 GPIO.output(23, GPIO.HIGH)
                 file1.write(dataStr + '\n')  
             file1.close()
-            time.sleep(3)          
+            postGPS()
+            time.sleep(3)
+            
+            
+def postGPS():
+    print(postIndices[2])
+    dataSet = session.query(Neo6m).get(postIndices[2])
+    if dataSet is not None:
+        data = {
+            'time': datetime.strftime(dataSet.time, '%Y-%m-%d %H:%M:%S'),
+            'data': dataSet
+        }
+        try:
+            r = requests.put(url+'neo', params=data, auth=('Lukas Brennauer', 'a'))
+            print('NEO PUT STATUS:', r.status_code)
+            if r.status_code == 200:
+                postIndices[2] += 1
+                postNeo()
+        except:
+            pass
