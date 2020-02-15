@@ -51,6 +51,7 @@ def pushData():
     )
     try:
         session.add(ins)
+        session.commit()
         print('buffered bme')
     except:
         print("\nWasn't able to add to the bme table!")
@@ -71,6 +72,7 @@ def pushData():
 
     try:
         session.add(ins)
+        session.commit()
         print('buffered mpu')
     except:
         ("\nWasn't able to add to the mpu table!")
