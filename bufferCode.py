@@ -13,6 +13,8 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+# --- Declaring the database classes/tables
+
 class Bme(Base):
     __tablename__ = 'bme'
     
@@ -22,7 +24,6 @@ class Bme(Base):
     temperature = Column(Integer)
     humidity = Column(Integer)
     pressure = Column(Integer)
-
 
 class Mpu(Base):
     __tablename__ = 'mpu'
@@ -49,7 +50,11 @@ class Neo6m(Base):
 
     data = Column(String)
 
+# --- creating the file if it doesn't exist already
+
 Base.metadata.create_all(engine)
+
+# --- declaring the functions for buffering the measurements
 
 def pushData():
     bmeVal = readBME280All()
