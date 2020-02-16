@@ -3,15 +3,15 @@ import time
 import datetime
 import RPi.GPIO as GPIO
 from bufferCode import pushGPS
-from postCode import url, postIndices
+from postCode import url, postIndices, writeIndices
 
 # --- declaring a loop for the GPS serial stream
 
 def bufferAndPostGPS():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(23, GPIO.OUT)
     GPIO.setup(24, GPIO.OUT)
+
 
     ser = serial.Serial("/dev/serial0", baudrate = 9600, timeout = 0.5)
 
@@ -35,7 +35,7 @@ def bufferAndPostGPS():
                     lastHadConnection = False
                     now = datetime.now()
                     file1.write('\n------------- Connection lost: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' -------------\n\n')
-                GPIO.output(23, GPIO.LOW)
+                GPIO.output(24, GPIO.LOW)
 
             else:   
                 print (dataStr)
@@ -44,7 +44,7 @@ def bufferAndPostGPS():
                     lastHadConnection = True
                     file1.write('\n---------------- Connected: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' ----------------\n\n')
 
-                GPIO.output(23, GPIO.HIGH)
+                GPIO.output(24, GPIO.HIGH)
                 file1.write(dataStr + '\n')  
             file1.close()
             postGPS()
@@ -66,6 +66,7 @@ def postGPS():
             print('NEO PUT STATUS:', r.status_code)
             if r.status_code == 200:
                 postIndices[2] += 1
-                postNeo()
+                writeIndices()
+                postGPS()
         except:
             pass

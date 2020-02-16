@@ -6,7 +6,21 @@ from bufferCode import Bme, Mpu, session
 # --- creating global variables used for posting
 
 postIndices = [1, 1, 1]
+
 url = 'http://192.168.2.105:5000/api/raspi/'
+
+# --- functions to save and load the postIndices from a file
+
+def writeIndices():
+    with open('indexFile.txt', 'w') as file:
+        for listitem in postIndices:
+            file.write('%s\n' % listitem)
+    
+def readIndices():
+    with open('indexFile.txt', 'r') as file:
+        postIndices = []
+        for line in file:
+            postIndices.append(line[:-1] or 1)
 
 # --- declaring functions for posting the measurements to the webserver
 
@@ -25,6 +39,7 @@ def postBme():
             print('BME PUT STATUS:', r.status_code)
             if r.status_code == 200:
                 postIndices[0] += 1
+                writeIndices()
                 postBme()
         except:
             pass
@@ -49,7 +64,9 @@ def postMpu():
             print('MPU PUT STATUS:', r.status_code)
             if r.status_code == 200:
                 postIndices[1] += 1
+                writeIndices()
                 postMpu()
         except:
             pass
     
+readIndices()
