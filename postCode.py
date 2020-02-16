@@ -1,7 +1,7 @@
 from datetime import datetime
 import requests
 
-from bufferCode import Bme, Mpu, session
+from bufferCode import Bme, Mpu, Neo6m, session
 
 # --- creating global variables used for posting
 
@@ -66,6 +66,26 @@ def postMpu():
                 postIndices[1] += 1
                 writeIndices()
                 postMpu()
+        except:
+            pass
+
+# --- declaring a function for posting the location to the webserver
+
+def postGPS():
+    print(postIndices[2])
+    dataSet = session.query(Neo6m).get(postIndices[2])
+    if dataSet is not None:
+        data = {
+            'time': datetime.strftime(dataSet.time, '%Y-%m-%d %H:%M:%S'),
+            'data': dataSet
+        }
+        try:
+            r = requests.put(url+'neo', params=data, auth=('Lukas Brennauer', 'a'))
+            print('NEO PUT STATUS:', r.status_code)
+            if r.status_code == 200:
+                postIndices[2] += 1
+                writeIndices()
+                postGPS()
         except:
             pass
     
