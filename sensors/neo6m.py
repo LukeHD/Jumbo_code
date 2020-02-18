@@ -15,7 +15,7 @@ def bufferAndPostGPS():
 
     ser = serial.Serial("/dev/serial0", baudrate = 9600, timeout = 0.5)
 
-    file1 = open("dataTest.txt","a")
+    file1 = open("bufferGPS.txt","a")
     now = datetime.datetime.now()
     lastHadConnection = False
     file1.write('\n---------------------- ' + now.strftime('%d.%m.%Y' "  " '%H:%M:%S') + ' ----------------------\n')
