@@ -21,15 +21,21 @@ def readIndices():
     with open('indexFile.txt', 'r') as file:
         if not file.read(1):
             return [1, 1, 1]
-        tmp = []
+        indices = []
+        file.seek(0, 0)
         for line in file:
-            tmp.append(1)
-        print(tmp)
-        return tmp
+            try:
+                indices.append(int(line[:-1]))
+            except:
+                indices.append(1)
+        return indices
+
+print(readIndices())
 
 postIndices = readIndices()
 if postIndices == [1, 1, 1]:
     writeIndices()
+
 
 # --- declaring functions for posting the measurements to the webserver
 
