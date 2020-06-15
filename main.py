@@ -1,5 +1,5 @@
 from bufferCode import bufferData
-from postCode import postBme, postMpu
+from postCode import postBme#, postMpu
 import time
 from sensors import neo6m
 from multiprocessing import Process
@@ -10,7 +10,7 @@ def mainLoop():
     while True:
         bufferData()
         postBme()
-        postMpu()
+        #postMpu()
         time.sleep(10)
 
 if __name__=="__main__":

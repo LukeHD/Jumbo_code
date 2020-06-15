@@ -1,6 +1,6 @@
 from datetime import datetime as dt
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, DateTime, MetaData
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -71,20 +71,20 @@ def bufferData():
     except:
         print("\nWasn't able to add to the bme table!")
 
-    mpuVal = getMpuData()
-    ins = Mpu(
-        time = dt.now(),
-        gyroscope_x = mpuVal[0][0],
-        gyroscope_y = mpuVal[0][1],
-        gyroscope_z = mpuVal[0][2],
+    #mpuVal = getMpuData()
+    #ins = Mpu(
+        #time = dt.now(),
+        #gyroscope_x = mpuVal[0][0],
+        #gyroscope_y = mpuVal[0][1],
+        #gyroscope_z = mpuVal[0][2],
 
-        acceleration_x = mpuVal[1][0],
-        acceleration_y = mpuVal[1][1],
-        acceleration_z = mpuVal[1][2],
+        #acceleration_x = mpuVal[1][0],
+        #acceleration_y = mpuVal[1][1],
+        #acceleration_z = mpuVal[1][2],
 
-        rot_x = mpuVal[2][0],
-        rot_y = mpuVal[2][1]
-    )
+        #rot_x = mpuVal[2][0],
+        #rot_y = mpuVal[2][1]
+    #)
 
     try:
         session.add(ins)

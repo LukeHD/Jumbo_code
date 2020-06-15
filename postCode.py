@@ -7,7 +7,8 @@ from bufferCode import Bme, Mpu, Neo6m, session
 
 postIndices = [1, 1, 1]
 
-url = 'http://192.168.2.105:5000/api/raspi/'
+# url = 'http://192.168.137.245:5000/api/raspi/'
+url = 'http://192.168.178.71:5000/api/raspi/'
 
 # --- functions to save and load the postIndices from a file
 
@@ -18,14 +19,22 @@ def writeIndices():
     
 def readIndices():
     with open('indexFile.txt', 'r') as file:
-        postIndices = []
+        if not file.read(1):
+            return [1, 1, 1]
+        tmp = []
         for line in file:
-            postIndices.append(line[:-1] or 1)
+            tmp.append(1)
+        print(tmp)
+        return tmp
+
+postIndices = readIndices()
+if postIndices == [1, 1, 1]:
+    writeIndices()
 
 # --- declaring functions for posting the measurements to the webserver
 
 def postBme():
-    print(postIndices[0])
+    print("BME", postIndices[0])
     dataSet = session.query(Bme).get(postIndices[0])
     if dataSet is not None:
         data = {
@@ -45,7 +54,7 @@ def postBme():
             pass
 
 def postMpu():
-    print(postIndices[1])
+    print("MPU", postIndices[1])
     dataSet = session.query(Mpu).get(postIndices[1])
     if dataSet is not None:
         data = {
@@ -72,7 +81,7 @@ def postMpu():
 # --- declaring a function for posting the location to the webserver
 
 def postGPS():
-    print(postIndices[2])
+    print("NEO6M", postIndices[2])
     dataSet = session.query(Neo6m).get(postIndices[2])
     if dataSet is not None:
         data = {
@@ -89,4 +98,3 @@ def postGPS():
         except:
             pass
     
-readIndices()
