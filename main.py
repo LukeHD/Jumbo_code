@@ -1,19 +1,21 @@
 from bufferCode import bufferData
-from postCode import postBme#, postMpu
+from postCode import post
 import time
 from sensors import neo6m
 from multiprocessing import Process
+
 
 # --- declaring a function for the main loop (-> buffering and posting BME and MPU data)
 
 def mainLoop():
     while True:
         bufferData()
-        postBme()
-        #postMpu()
+        post("bme")
+        post("mpu")
         time.sleep(10)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
 
     # --- running the main loop and gps loop simultaneously
 

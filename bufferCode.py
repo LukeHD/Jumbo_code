@@ -7,101 +7,85 @@ from sqlalchemy.orm import sessionmaker
 from sensors.bme280 import readBME280All
 from sensors.mpu6050 import getMpuData
 
+from helper import getClassByName
+
 engine = create_engine('sqlite:///saves.db', echo=False)
 
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
 # --- Declaring the database classes/tables
 
 class Bme(Base):
     __tablename__ = 'bme'
-    
+
     id = Column(Integer, primary_key=True)
     time = Column(DateTime, default=dt.now())
+    temp = Column(Integer)
+    hum = Column(Integer)
+    press = Column(Integer)
 
-    temperature = Column(Integer)
-    humidity = Column(Integer)
-    pressure = Column(Integer)
 
 class Mpu(Base):
     __tablename__ = 'mpu'
 
     id = Column(Integer, primary_key=True)
     time = Column(DateTime, default=dt.now())
-
-    gyroscope_x = Column(Integer)
-    gyroscope_y = Column(Integer)
-    gyroscope_z = Column(Integer)
-
-    acceleration_x = Column(Integer)
-    acceleration_y = Column(Integer)
-    acceleration_z = Column(Integer)
-
+    gyro_x = Column(Integer)
+    gyro_y = Column(Integer)
+    gyro_z = Column(Integer)
+    acc_x = Column(Integer)
+    acc_y = Column(Integer)
+    acc_z = Column(Integer)
     rot_x = Column(Integer)
     rot_y = Column(Integer)
 
-class Neo6m(Base):
-    __tablename__ = 'Neo6m'
-    
+
+class Neo(Base):
+    __tablename__ = 'neo'
+
     id = Column(Integer, primary_key=True)
     time = Column(DateTime, default=dt.now())
+    pos = Column(String)
 
-    data = Column(String)
 
 # --- creating the file if it doesn't exist already
 
 Base.metadata.create_all(engine)
 
+
 # --- declaring the functions for buffering the measurements
+
+def buffer(name, vals):
+    try:
+        ins = getClassByName(name.capitulize())(**vals)
+        session.add(ins)
+        session.commit()
+        print('buffered', name)
+    except Exception as e:
+        print("\nWasn't able to add to the", name, "table!", e)
+
 
 def bufferData():
     bmeVal = readBME280All()
-    ins = Bme(
-        time = dt.now(),
-        temperature = bmeVal[0],
-        pressure = bmeVal[1],
-        humidity = bmeVal[2]
-    )
-    try:
-        session.add(ins)
-        session.commit()
-        print('buffered bme')
-    except:
-        print("\nWasn't able to add to the bme table!")
+    buffer("bme", {
+        "time": dt.now(),
+        "temp": bmeVal[0],
+        "press": bmeVal[1],
+        "hum": bmeVal[2]
+    })
 
-    #mpuVal = getMpuData()
-    #ins = Mpu(
-        #time = dt.now(),
-        #gyroscope_x = mpuVal[0][0],
-        #gyroscope_y = mpuVal[0][1],
-        #gyroscope_z = mpuVal[0][2],
-
-        #acceleration_x = mpuVal[1][0],
-        #acceleration_y = mpuVal[1][1],
-        #acceleration_z = mpuVal[1][2],
-
-        #rot_x = mpuVal[2][0],
-        #rot_y = mpuVal[2][1]
-    #)
-
-    try:
-        session.add(ins)
-        session.commit()
-        print('buffered mpu')
-    except:
-        ("\nWasn't able to add to the mpu table!")
-
-def pushGPS(dataStr):
-    ins = Neo6m(
-        time = dt.now(),
-        data = dataStr
-    )
-    try:
-        session.add(ins)
-        session.commit()
-        print('buffered neo')
-    except:
-        print("\nWasn't able to add to the neo table!")
-    
+    mpuVal = getMpuData()
+    buffer("mpu", {
+        "time": dt.now(),
+        "gyro_x": mpuVal[0][0],
+        "gyro_y": mpuVal[0][1],
+        "gyro_z": mpuVal[0][2],
+        "acc_x": mpuVal[1][0],
+        "acc_y": mpuVal[1][1],
+        "acc_z": mpuVal[1][2],
+        "rot_x": mpuVal[2][0],
+        "rot_y": mpuVal[2][1]
+    })
