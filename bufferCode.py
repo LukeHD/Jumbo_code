@@ -7,8 +7,6 @@ from sqlalchemy.orm import sessionmaker
 from sensors.bme280 import readBME280All
 from sensors.mpu6050 import getMpuData
 
-from helper import getClassByName
-
 engine = create_engine('sqlite:///saves.db', echo=False)
 
 Base = declarative_base()
@@ -51,6 +49,10 @@ class Neo(Base):
     pos = Column(String)
 
 
+def getClassByName(name):
+    return globals()[name]
+
+
 # --- creating the file if it doesn't exist already
 
 Base.metadata.create_all(engine)
@@ -60,7 +62,7 @@ Base.metadata.create_all(engine)
 
 def buffer(name, vals):
     try:
-        ins = getClassByName(name.capitulize())(**vals)
+        ins = getClassByName(name.capitalize())(**vals)
         session.add(ins)
         session.commit()
         print('buffered', name)

@@ -23,32 +23,34 @@ def bufferAndPostGPS():
     file1.close()
 
     while True:
-        data = ser.readline()
+        try:
+            data = ser.readline()
 
-        if data[0:6] == b'$GPRMC':
-            dataStr = data.decode('utf-8')[0:-2]
-            dataArr = dataStr.split(",")
-            file1 = open("dataTest.txt", "a")
-            if dataArr[2] == 'V':
-                print('No Connection')
-                if lastHadConnection:
-                    lastHadConnection = False
-                    now = dt.datetime.now()
-                    file1.write('\n------------- Connection lost: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' -------------\n\n')
-                GPIO.output(24, GPIO.LOW)
+            if data[0:6] == b'$GPRMC':
+                dataStr = data.decode('utf-8')[0:-2]
+                dataArr = dataStr.split(",")
+                file1 = open("dataTest.txt", "a")
+                if dataArr[2] == 'V':
+                    print('No Connection')
+                    if lastHadConnection:
+                        lastHadConnection = False
+                        now = dt.datetime.now()
+                        file1.write('\n------------- Connection lost: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' -------------\n\n')
+                    GPIO.output(24, GPIO.LOW)
 
-            else:
-                print(dataStr)
-                buffer("neo", {
-                    "time": dt.datetime.now(),
-                    "pos": dataStr
-                })
-                if not lastHadConnection:
-                    lastHadConnection = True
-                    file1.write('\n---------------- Connected: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' ----------------\n\n')
+                else:
+                    buffer("neo", {
+                        "time": dt.datetime.now(),
+                        "pos": dataStr
+                    })
+                    if not lastHadConnection:
+                        lastHadConnection = True
+                        file1.write('\n---------------- Connected: ' + now.strftime('%d.%m.%Y' "   " '%H:%M:%S') + ' ----------------\n\n')
 
-                GPIO.output(24, GPIO.HIGH)
-                file1.write(dataStr+'\n')
-            file1.close()
-            post("neo")
-            time.sleep(3)
+                    GPIO.output(24, GPIO.HIGH)
+                    file1.write(dataStr+'\n')
+                file1.close()
+                post("neo")
+                time.sleep(3)
+        except:
+            pass

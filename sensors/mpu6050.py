@@ -2,7 +2,7 @@
 import smbus
 import math
 
-bus = smbus.SMBus(0) # bus = smbus.SMBus(0) fuer Revision 1
+bus = smbus.SMBus(1) # bus = smbus.SMBus(0) fuer Revision 1
 address = 0x68       # via i2cdetect
  
 # Register

@@ -48,6 +48,8 @@ def post(name):
     if dataSet is not None:
         dataVar = {attr: getattr(dataSet, attr) for attr in getClassAttrsByClassName(capName) if attr != 'id' and attr != 'metadata'}
         dataVar['time'] = dataVar['time'].timestamp()
+        if ('pos' in dataVar.keys()):
+            dataVar['pos']='"' + dataVar['pos'] + '"'
         print(dataVar)
         try:
             req = requests.request('POST', url+name, data=dataVar, timeout=1)
@@ -57,5 +59,5 @@ def post(name):
                 postIndices[sensorIndex] += 1
                 writeIndices()
                 post(name)
-        except ConnectionError:
+        except:
             pass

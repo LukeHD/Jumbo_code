@@ -1,3 +1,5 @@
+from bufferCode import Bme, Mpu, Neo
+
 sensors = [
     "bme",
     "mpu",
